@@ -21,4 +21,5 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
       - uses: gradle/gradle-build-action@v2
+      - run: ./gradlew spotlessCheck
       - run: ./gradlew run --args validate
