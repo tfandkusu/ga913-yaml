@@ -2,6 +2,7 @@ plugins {
     kotlin("jvm") version libs.versions.kotlin
     application
     alias(libs.plugins.spotless)
+    alias(libs.plugins.serialization)
 }
 
 group = "com.tfandkusu"
@@ -12,6 +13,7 @@ repositories {
 }
 
 dependencies {
+    implementation(libs.kaml)
     testImplementation(kotlin("test"))
     testImplementation(libs.junit)
 }

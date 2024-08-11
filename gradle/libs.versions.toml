@@ -2,5 +2,7 @@
 kotlin = "2.0.0"
 [libraries]
 junit = "junit:junit:4.13.2"
+kaml =  "com.charleskorn.kaml:kaml:0.60.0"
 [plugins]
 spotless = { id = "com.diffplug.spotless", version = "6.25.0" }
+serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }

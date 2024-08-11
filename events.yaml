@@ -1,0 +1,47 @@
+- description: ランドマーク一覧画面
+  class: LandmarkList
+  value: LandmarkList
+  actions:
+    - description: いいねを付けたランドマークのみを表示するスイッチ
+      class: FavoritesOnlySwitch
+      value: FavoritesOnlySwitch
+      parameters:
+        - variable: favoritesOnly
+          value: favorites_only
+          type: boolean
+- description: ランドマーク詳細画面
+  class: LandmarkDetail
+  value: LandmarkDetail
+  actions:
+    - description: いいねを付ける
+      class: FavoriteOn
+      value: FavoriteOn
+      conversion: true
+      parameters:
+        - variable: id
+          value: id
+          type: long
+        - variable: name
+          value: name
+          type: string
+    - description: いいねを解除する
+      class: FavoriteOff
+      value: FavoriteOff
+      parameters:
+        - variable: id
+          value: id
+          type: long
+        - variable: name
+          value: name
+          type: string
+# サンプルアプリに存在しないが、動作確認のためにイベントを定義した
+- description: 設定画面
+  class: Setting
+  value: Setting
+- description: 情報画面
+  class: Info
+  value: Info
+  actions:
+    - description: プライバシーポリシーを表示する
+      class: PrivacyPolicy
+      value: PrivacyPolicy
