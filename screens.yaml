@@ -1,0 +1,7 @@
+- description: ランドマーク一覧画面
+  class: LandmarkList
+  value: LandmarkList
+  conversion: true
+- description: ランドマーク詳細画面
+  class: LandmarkDetail
+  value: LandmarkDetail
