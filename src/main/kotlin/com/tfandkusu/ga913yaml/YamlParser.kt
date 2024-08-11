@@ -7,7 +7,7 @@ import java.io.File
 
 class YamlParser {
     fun parseScreens(): List<Screen> {
-        val yamlString = File("events/screens.yaml").readText()
+        val yamlString = File("events.yaml").readText()
         return Yaml.default.decodeFromString(ListSerializer(Screen.serializer()), yamlString)
     }
 }
