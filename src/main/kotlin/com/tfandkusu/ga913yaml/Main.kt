@@ -7,7 +7,7 @@ fun main(args: Array<String>) {
         return
     }
     val command = args[0]
-    when(command) {
+    when (command) {
         "validate" -> println("Validate")
         "make" -> println("Make")
         else -> println("Unknown command")
