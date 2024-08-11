@@ -4,10 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="032b4035-8789-493c-b32b-fd14cfe5bcd3" name="Changes" comment="初回コミット">
-      <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
+    <list default="true" id="032b4035-8789-493c-b32b-fd14cfe5bcd3" name="Changes" comment="./gradlew run で実行">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle.kts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/tfandkusu/ga913yaml/Main.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/tfandkusu/ga913yaml/Main.kt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -102,11 +101,20 @@
       <option name="project" value="LOCAL" />
       <updated>1723360909224</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="./gradlew run で実行">
+      <option name="closed" value="true" />
+      <created>1723361915223</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1723361915223</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="初回コミット" />
-    <option name="LAST_COMMIT_MESSAGE" value="初回コミット" />
+    <MESSAGE value="./gradlew run で実行" />
+    <option name="LAST_COMMIT_MESSAGE" value="./gradlew run で実行" />
   </component>
 </project>
