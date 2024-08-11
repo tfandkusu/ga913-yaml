@@ -1,5 +1,6 @@
 plugins {
     kotlin("jvm") version "2.0.0"
+    application
 }
 
 group = "com.tfandkusu"
@@ -18,4 +19,7 @@ tasks.test {
 }
 kotlin {
     jvmToolchain(17)
+}
+application {
+    mainClass.set("com.tfandkusu.ga913yaml.MainKt")
 }
