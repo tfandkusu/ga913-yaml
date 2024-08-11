@@ -1,5 +1,7 @@
 plugins {
-    kotlin("jvm") version "2.0.0"
+    kotlin("jvm") version libs.versions.kotlin
+    application
+    alias(libs.plugins.spotless)
 }
 
 group = "com.tfandkusu"
@@ -11,11 +13,21 @@ repositories {
 
 dependencies {
     testImplementation(kotlin("test"))
+    testImplementation(libs.junit)
 }
 
 tasks.test {
-    useJUnitPlatform()
+    useJUnit()
 }
 kotlin {
     jvmToolchain(17)
+}
+application {
+    mainClass.set("com.tfandkusu.ga913yaml.MainKt")
+}
+spotless {
+    kotlin {
+        target("**/*.kt")
+        ktlint("1.3.1")
+    }
 }
