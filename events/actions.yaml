@@ -16,7 +16,7 @@
     - description: いいねを付ける
       class: FavoriteOn
       value: FavoriteOn
-      coversion: true
+      conversion: true
     - description: いいねを解除する
       class: FavoriteOff
       value: FavoriteOff

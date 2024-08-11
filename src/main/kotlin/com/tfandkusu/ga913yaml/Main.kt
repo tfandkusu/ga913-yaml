@@ -8,7 +8,10 @@ fun main(args: Array<String>) {
     }
     val command = args[0]
     when (command) {
-        "validate" -> println("Validate")
+        "validate" -> {
+            val screens = YamlParser().parseScreens()
+            println(screens)
+        }
         "make" -> println("Make")
         else -> println("Unknown command")
     }
