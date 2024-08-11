@@ -1,4 +1,6 @@
 [versions]
 kotlin = "2.0.0"
+[libraries]
+junit = "junit:junit:4.13.2"
 [plugins]
 spotless = { id = "com.diffplug.spotless", version = "6.25.0" }

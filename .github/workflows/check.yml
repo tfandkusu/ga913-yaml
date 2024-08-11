@@ -22,4 +22,5 @@ jobs:
           java-version: '17'
       - uses: gradle/gradle-build-action@v2
       - run: ./gradlew spotlessCheck
+      - run: ./gradlew test
       - run: ./gradlew run --args validate
