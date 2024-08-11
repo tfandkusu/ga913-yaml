@@ -1,0 +1,4 @@
+[versions]
+kotlin = "2.0.0"
+[plugins]
+spotless = { id = "com.diffplug.spotless", version = "6.25.0" }
