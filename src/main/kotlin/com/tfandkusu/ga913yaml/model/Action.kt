@@ -7,7 +7,7 @@ import kotlinx.serialization.Serializable
  * 画面内操作イベント
  * @param description 説明文。ドキュメントとイベントクラスへのコメントに採用される。
  * @param className Swift / Kotlin 上でのクラス名
- * @param value Analytics イベント名
+ * @param eventName Analytics イベント名
  * @param isConversionEvent Firebase A/B Testing のために、コンバージョンイベントにする
  * @param parameters パラメータ一覧
  */
@@ -16,7 +16,8 @@ data class Action(
     val description: String,
     @SerialName("class")
     val className: String,
-    val value: String,
+    @SerialName("value")
+    val eventName: String,
     @SerialName("conversion")
     val isConversionEvent: Boolean = false,
     val parameters: List<Parameter> = listOf(),
@@ -26,15 +27,17 @@ data class Action(
  * 画面内操作イベントのパラメータ
  *
  * @param description 説明文。ドキュメントとイベントクラスのフィールドへのコメントに採用される。
- * @param variable Swift / Kotlin 上での変数名
- * @param key Analytics イベントパラメータのキー
+ * @param propertyName Swift / Kotlin 上でのプロパティ名
+ * @param eventParameterKey Analytics イベントパラメータのキー
  * @param type パラメータの型
  */
 @Serializable
 data class Parameter(
     val description: String,
-    val variable: String,
-    val key: String,
+    @SerialName("property")
+    val propertyName: String,
+    @SerialName("key")
+    val eventParameterKey: String,
     val type: ParameterType,
 )
 

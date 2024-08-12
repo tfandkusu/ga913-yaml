@@ -7,7 +7,7 @@
       value: FavoritesOnlySwitch
       parameters:
         - description: スイッチの ON/OFF
-          variable: favoritesOnly
+          property: favoritesOnly
           key: favorites_only
           type: boolean
 - description: ランドマーク詳細画面
@@ -20,11 +20,11 @@
       conversion: true
       parameters:
         - description: ランドマークの ID
-          variable: id
+          property: id
           key: id
           type: long
         - description: ランドマークの名前
-          variable: name
+          property: name
           key: name
           type: string
     - description: いいねを解除する
@@ -32,11 +32,11 @@
       value: FavoriteOff
       parameters:
         - description: ランドマークの ID
-          variable: id
+          property: id
           key: id
           type: long
         - description: ランドマークの名前
-          variable: name
+          property: name
           key: name
           type: string
 # サンプルアプリに存在しないが、動作確認のためにイベントを定義した

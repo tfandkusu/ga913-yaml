@@ -99,7 +99,7 @@ object KotlinGenerator {
                 ).nestedClass(SCREEN_CLASS),
             ).addSuperclassConstructorParameter(
                 "%S",
-                screen.className,
+                screen.eventName,
             ).addSuperclassConstructorParameter(
                 "%L",
                 screen.isConversionEvent,
@@ -150,18 +150,26 @@ object KotlinGenerator {
             .objectBuilder(screen.className)
             .apply {
                 screen.actions.forEach { action ->
-                    addType(generateActionClass(action))
+                    addType(
+                        generateActionClass(
+                            screenName = screen.eventName,
+                            action = action,
+                        ),
+                    )
                 }
             }.build()
 
-    private fun generateActionClass(action: Action): TypeSpec {
+    private fun generateActionClass(
+        screenName: String,
+        action: Action,
+    ): TypeSpec {
         val builder =
             if (action.parameters.isEmpty()) {
                 TypeSpec
-                    .objectBuilder(action.value)
+                    .objectBuilder(action.className)
                     .addSuperclassConstructorParameter(
                         "%S",
-                        action.className,
+                        screenName + action.eventName,
                     ).addSuperclassConstructorParameter("emptyMap()")
                     .addSuperclassConstructorParameter(
                         "%L",
@@ -169,7 +177,7 @@ object KotlinGenerator {
                     )
             } else {
                 TypeSpec
-                    .classBuilder(action.value)
+                    .classBuilder(action.className)
                     .addModifiers(KModifier.DATA)
                     .primaryConstructor(
                         FunSpec
@@ -177,14 +185,14 @@ object KotlinGenerator {
                             .apply {
                                 action.parameters.forEach { parameter ->
                                     addParameter(
-                                        parameter.variable,
+                                        parameter.propertyName,
                                         toKClass(parameter.type),
                                     )
                                 }
                             }.build(),
                     ).addSuperclassConstructorParameter(
                         "%S",
-                        action.className,
+                        screenName + action.eventName,
                     ).addSuperclassConstructorParameter(
                         CodeBlock
                             .builder()
@@ -194,8 +202,8 @@ object KotlinGenerator {
                                     action.parameters.forEach { parameter ->
                                         addStatement(
                                             "%S to %L,",
-                                            parameter.key,
-                                            parameter.variable,
+                                            parameter.eventParameterKey,
+                                            parameter.propertyName,
                                         )
                                     }
                                 }
@@ -209,9 +217,9 @@ object KotlinGenerator {
                             addProperty(
                                 PropertySpec
                                     .builder(
-                                        parameter.variable,
+                                        parameter.propertyName,
                                         toKClass(parameter.type),
-                                    ).initializer(parameter.variable)
+                                    ).initializer(parameter.propertyName)
                                     .addKdoc(parameter.description)
                                     .build(),
                             )
