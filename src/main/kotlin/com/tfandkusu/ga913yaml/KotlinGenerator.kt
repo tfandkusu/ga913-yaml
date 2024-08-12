@@ -42,12 +42,17 @@ object KotlinGenerator {
                 TypeSpec
                     .classBuilder(SCREEN_CLASS)
                     .addModifiers(KModifier.SEALED)
-                    .addProperty(
+                    .primaryConstructor(
+                        FunSpec
+                            .constructorBuilder()
+                            .addParameter(EVENT_NAME_PROPERTY, STRING)
+                            .build(),
+                    ).addProperty(
                         PropertySpec
                             .builder(
                                 EVENT_NAME_PROPERTY,
                                 String::class,
-                            ).addModifiers(KModifier.ABSTRACT)
+                            ).initializer(EVENT_NAME_PROPERTY)
                             .build(),
                     ).apply {
                         screens.forEach { screen ->
@@ -89,14 +94,9 @@ object KotlinGenerator {
                     PACKAGE,
                     ROOT_CLASS,
                 ).nestedClass(SCREEN_CLASS),
-            ).addProperty(
-                PropertySpec
-                    .builder(
-                        EVENT_NAME_PROPERTY,
-                        String::class,
-                    ).addModifiers(KModifier.OVERRIDE)
-                    .initializer("%S", screen.value)
-                    .build(),
+            ).addSuperclassConstructorParameter(
+                "%S",
+                screen.className,
             ).build()
 
     private fun generateActionScreenClass(screen: Screen): TypeSpec =
