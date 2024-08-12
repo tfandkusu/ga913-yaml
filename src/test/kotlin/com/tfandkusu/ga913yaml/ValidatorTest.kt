@@ -166,4 +166,89 @@ class ValidatorTest {
             assertEquals("イベント種類数が500を超えています。", e.message)
         }
     }
+
+    @Test
+    fun checkScreenEventNameDuplicate() {
+        val screens =
+            listOf(
+                Screen(
+                    description = "画面1",
+                    className = "Screen1",
+                    eventName = "Screen1",
+                ),
+                Screen(
+                    description = "画面2",
+                    className = "Screen2",
+                    eventName = "Screen1",
+                ),
+            )
+        try {
+            Validator.validate(screens)
+            fail()
+        } catch (e: IllegalArgumentException) {
+            assertEquals("画面遷移イベント Screen2 は他のイベントと重複しています。", e.message)
+        }
+    }
+
+    @Test
+    fun checkActionEventNameDuplicate() {
+        val screens =
+            listOf(
+                Screen(
+                    description = "画面1",
+                    className = "Screen1",
+                    eventName = "Screen1",
+                    actions =
+                        listOf(
+                            Action(
+                                description = "画面内操作1",
+                                className = "Action1",
+                                eventName = "Action1",
+                            ),
+                            Action(
+                                description = "画面内操作2",
+                                className = "Action2",
+                                eventName = "Action1",
+                            ),
+                        ),
+                ),
+            )
+        try {
+            Validator.validate(screens)
+            fail()
+        } catch (e: IllegalArgumentException) {
+            assertEquals("画面内操作イベント Screen1.Action2 は他のイベントと重複しています。", e.message)
+        }
+    }
+
+    @Test
+    fun checkJoinedEventNameDuplicate() {
+        val screens =
+            listOf(
+                Screen(
+                    description = "画面1",
+                    className = "Screen1",
+                    eventName = "Screen1",
+                    actions =
+                        listOf(
+                            Action(
+                                description = "画面内操作1",
+                                className = "Action1",
+                                eventName = "Action1",
+                            ),
+                        ),
+                ),
+                Screen(
+                    description = "画面2",
+                    className = "Screen2",
+                    eventName = "Screen1Action1",
+                ),
+            )
+        try {
+            Validator.validate(screens)
+            fail()
+        } catch (e: IllegalArgumentException) {
+            assertEquals("画面遷移イベント Screen2 は他のイベントと重複しています。", e.message)
+        }
+    }
 }

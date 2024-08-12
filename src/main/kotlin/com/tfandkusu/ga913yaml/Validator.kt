@@ -7,6 +7,7 @@ object Validator {
         checkEventNameLength(screens)
         checkEventParameterKeyLength(screens)
         checkEventCount(screens)
+        checkDuplicateEventName(screens)
     }
 
     /**
@@ -37,7 +38,7 @@ object Validator {
                     if (parameter.eventParameterKey.length > 40) {
                         throw IllegalArgumentException(
                             "画面内操作イベント " + screen.className + "." + action.className + " のパラメータキー " +
-                                    parameter.propertyName + " は40文字を超えています。",
+                                parameter.propertyName + " は40文字を超えています。",
                         )
                     }
                 }
@@ -53,6 +54,22 @@ object Validator {
             screens.count { it.isConversionEvent } + screens.flatMap { it.actions }.count { it.isConversionEvent }
         if (eventCount > 500) {
             throw IllegalArgumentException("イベント種類数が500を超えています。")
+        }
+    }
+
+    private fun checkDuplicateEventName(screens: List<Screen>) {
+        val eventNames = mutableSetOf<String>()
+        for (screen in screens) {
+            if (!eventNames.add(screen.eventName)) {
+                throw IllegalArgumentException("画面遷移イベント " + screen.className + " は他のイベントと重複しています。")
+            }
+            for (action in screen.actions) {
+                if (!eventNames.add(screen.eventName + action.eventName)) {
+                    throw IllegalArgumentException(
+                        "画面内操作イベント " + screen.className + "." + action.className + " は他のイベントと重複しています。",
+                    )
+                }
+            }
         }
     }
 }
