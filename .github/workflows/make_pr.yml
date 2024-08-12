@@ -9,7 +9,7 @@ on:
       - synchronize
       - reopened
 jobs:
-  check:
+  make_pr:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -21,7 +21,12 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
       - uses: gradle/gradle-build-action@v2
-      - run: git clone git@github.com:tfandkusu/ga913-android.git
+      - name: Android アプリリポジトリチェックアウト
+        uses: actions/checkout@v3
+        with:
+          repository: tfandkusu/ga913-android
+          token: ${{ secrets.MY_PERSONAL_ACCESS_TOKEN }}
+          path: ga913-android
       - run: ./gradlew run --args make
       - run: git status
         working-directory: ga913-android
