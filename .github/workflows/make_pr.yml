@@ -29,6 +29,9 @@ jobs:
           path: ga913-android
       - name: Android 向けイベントクラス作成
         run: ./gradlew run --args make
+      - name: Android アプリのフォーマット整え
+        run: ./gradlew spotlessApply
+        working-directory: ga913-android
       - name: Android アプリコミット
         run: |
           git config user.name "github-actions"
@@ -39,7 +42,7 @@ jobs:
         working-directory: ga913-android
       - name: Android アプリへプルリク作成
         run: |
-          git push origin update_analytics_event_class
+          git push -f origin update_analytics_event_class
           gh pr create --title "[自動生成]Analytics イベントクラスを更新" --body "Analytics イベントクラスが自動生成されました。問題が無ければマージしてください。" --base main
         working-directory: ga913-android
         env:
