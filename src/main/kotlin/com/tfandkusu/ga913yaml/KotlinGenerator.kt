@@ -138,15 +138,11 @@ object KotlinGenerator {
                             )
                         }
                     }.build(),
-            ).addProperty(
-                PropertySpec
-                    .builder(
-                        EVENT_NAME_PROPERTY,
-                        String::class,
-                    ).addModifiers(KModifier.OVERRIDE)
-                    .initializer("%S", action.value)
-                    .build(),
-            ).apply {
+            ).addSuperclassConstructorParameter(
+                "%S",
+                action.className,
+            )
+            .apply {
                 action.parameters.forEach { parameter ->
                     addProperty(
                         PropertySpec
