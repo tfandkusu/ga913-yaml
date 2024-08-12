@@ -1,15 +1,12 @@
-name: check
+name: make_document
 on:
-  push:
-    branches:
-      - main
   pull_request:
     types:
       - opened
       - synchronize
       - reopened
 jobs:
-  check:
+  make_document:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -21,7 +18,13 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
       - uses: gradle/gradle-build-action@v2
-      - run: ./gradlew spotlessCheck
-      - run: ./gradlew test
-      - name: イベントの検証
+      - name: イベント仕様書の作成
         run: ./gradlew run --args validate
+      - name: イベント仕様書を PUSH する
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git add .
+          git commit -m "イベント仕様書の更新"
+          git push origin HEAD
+        continue-on-error: true
