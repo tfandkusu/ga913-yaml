@@ -1,21 +1,21 @@
-# 画面内イベント一覧
+# 画面内操作イベント一覧
 
-# ランドマーク一覧画面
+## ランドマーク一覧画面
 
-| イベント名 | Analytics イベント名 | パラメータ | コンバージョンイベント |
+| 操作内容 | Analytics イベント名 | パラメータ | コンバージョンイベント |
 | -- | -- | -- | -- |
-| いいねを付けたランドマークのみを表示するスイッチ | LandmarkListFavoritesOnlySwitch | スイッチの ON/OFF favorites_only: Boolean<br> |  |
+| いいねを付けたランドマークのみを表示するスイッチ | LandmarkListFavoritesOnlySwitch | スイッチの ON/OFF favorites_only: Int<br> |  |
 
-# ランドマーク詳細画面
+## ランドマーク詳細画面
 
-| イベント名 | Analytics イベント名 | パラメータ | コンバージョンイベント |
+| 操作内容 | Analytics イベント名 | パラメータ | コンバージョンイベント |
 | -- | -- | -- | -- |
-| いいねを付ける | LandmarkDetailFavoriteOn | ランドマークの ID id: Long<br>ランドマークの名前 name: String<br> | ○ |
-| いいねを解除する | LandmarkDetailFavoriteOff | ランドマークの ID id: Long<br>ランドマークの名前 name: String<br> |  |
+| いいねを付ける | LandmarkDetailFavoriteOn | ランドマークの ID id: Int<br>ランドマークの名前 name: String<br> | ○ |
+| いいねを解除する | LandmarkDetailFavoriteOff | ランドマークの ID id: Int<br>ランドマークの名前 name: String<br> |  |
 
-# 情報画面
+## 情報画面
 
-| イベント名 | Analytics イベント名 | パラメータ | コンバージョンイベント |
+| 操作内容 | Analytics イベント名 | パラメータ | コンバージョンイベント |
 | -- | -- | -- | -- |
 | プライバシーポリシーを表示する | InfoPrivacyPolicy |  |  |
 
