@@ -82,6 +82,7 @@ object KotlinGenerator {
     private fun generateScreenClass(screen: Screen): TypeSpec =
         TypeSpec
             .objectBuilder(screen.className)
+            .addKdoc(screen.description)
             .addModifiers(KModifier.DATA)
             .superclass(
                 ClassName(
@@ -110,6 +111,7 @@ object KotlinGenerator {
     private fun generateActionClass(action: Action): TypeSpec =
         TypeSpec
             .classBuilder(action.value)
+            .addKdoc(action.description)
             .addModifiers(KModifier.DATA)
             .superclass(
                 ClassName(
