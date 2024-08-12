@@ -20,6 +20,9 @@ import com.squareup.kotlinpoet.withIndent
 import com.tfandkusu.ga913yaml.model.Action
 import com.tfandkusu.ga913yaml.model.ParameterType
 import com.tfandkusu.ga913yaml.model.Screen
+import java.io.File
+import java.nio.file.Files
+import java.nio.file.Paths
 
 object KotlinGenerator {
     private const val PACKAGE = "com.tfandkusu.ga913android.analytics"
@@ -41,7 +44,8 @@ object KotlinGenerator {
                 ).addType(
                     generateAnalyticsEventClass(screens),
                 ).build()
-        fileSpec.writeTo(System.out)
+        Files.createDirectories(Paths.get(DIRECTORY))
+        File("$DIRECTORY/$ROOT_CLASS.kt").writeText(fileSpec.toString())
     }
 
     private fun generateAnalyticsEventClass(screens: List<Screen>): TypeSpec =
