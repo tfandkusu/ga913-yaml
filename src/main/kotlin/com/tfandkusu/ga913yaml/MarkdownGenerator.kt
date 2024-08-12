@@ -27,7 +27,7 @@ object MarkdownGenerator {
         builder.append("# 画面内操作イベント一覧\n\n")
         for (screen in screens) {
             if (screen.actions.isNotEmpty()) {
-                builder.append("# ${screen.description}\n\n")
+                builder.append("## ${screen.description}\n\n")
                 builder.append(generateActionsMarkdown(screen))
                 builder.append("\n")
             }
