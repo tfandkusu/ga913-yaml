@@ -24,7 +24,7 @@ object MarkdownGenerator {
 
     private fun generateActionsMarkdown(screens: List<Screen>) {
         val builder = StringBuilder()
-        builder.append("# 画面内イベント一覧\n\n")
+        builder.append("# 画面内操作イベント一覧\n\n")
         for (screen in screens) {
             if (screen.actions.isNotEmpty()) {
                 builder.append("# ${screen.description}\n\n")
@@ -37,7 +37,7 @@ object MarkdownGenerator {
 
     private fun generateActionsMarkdown(screen: Screen): String {
         val builder = StringBuilder()
-        builder.append("| イベント名 | Analytics イベント名 | パラメータ | コンバージョンイベント |\n")
+        builder.append("| 操作内容 | Analytics イベント名 | パラメータ | コンバージョンイベント |\n")
         builder.append("| -- | -- | -- | -- |\n")
         for (action in screen.actions) {
             builder.append(
@@ -70,9 +70,9 @@ object MarkdownGenerator {
         when (this) {
             ParameterType.STRING -> "String"
             ParameterType.INT -> "Int"
-            ParameterType.LONG -> "Long"
+            ParameterType.LONG -> "Int" // BigQuery には Long はない
             ParameterType.FLOAT -> "Float"
             ParameterType.DOUBLE -> "Double"
-            ParameterType.BOOLEAN -> "Boolean"
+            ParameterType.BOOLEAN -> "Int" // BigQuery には Boolean はない
         }
 }

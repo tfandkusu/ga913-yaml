@@ -38,5 +38,7 @@ bin/
 ### Mac OS ###
 .DS_Store
 
+local.properties
+
 ga913-android
 ga913-ios
