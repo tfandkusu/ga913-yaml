@@ -120,45 +120,34 @@ object KotlinGenerator {
                 }
             }.build()
 
-    private fun generateActionClass(action: Action): TypeSpec =
-        TypeSpec
-            .classBuilder(action.value)
-            .addKdoc(action.description)
-            .addModifiers(KModifier.DATA)
-            .superclass(
-                ClassName(
-                    PACKAGE,
-                    ROOT_CLASS,
-                ).nestedClass(ACTION_CLASS),
-            ).primaryConstructor(
-                FunSpec
-                    .constructorBuilder()
-                    .apply {
-                        action.parameters.forEach { parameter ->
-                            addParameter(
-                                parameter.variable,
-                                toKClass(parameter.type),
-                            )
-                        }
-                    }.build(),
-            ).addSuperclassConstructorParameter(
-                "%S",
-                action.className,
-            ).apply {
-                action.parameters.forEach { parameter ->
-                    addProperty(
-                        PropertySpec
-                            .builder(
-                                parameter.variable,
-                                toKClass(parameter.type),
-                            ).initializer(parameter.variable)
-                            .build(),
-                    )
-                }
-                if (action.parameters.isEmpty()) {
-                    addSuperclassConstructorParameter("emptyMap()")
-                } else {
-                    addSuperclassConstructorParameter(
+    private fun generateActionClass(action: Action): TypeSpec {
+        val builder =
+            if (action.parameters.isEmpty()) {
+                TypeSpec
+                    .objectBuilder(action.value)
+                    .addSuperclassConstructorParameter(
+                        "%S",
+                        action.className,
+                    ).addSuperclassConstructorParameter("emptyMap()")
+            } else {
+                TypeSpec
+                    .classBuilder(action.value)
+                    .addModifiers(KModifier.DATA)
+                    .primaryConstructor(
+                        FunSpec
+                            .constructorBuilder()
+                            .apply {
+                                action.parameters.forEach { parameter ->
+                                    addParameter(
+                                        parameter.variable,
+                                        toKClass(parameter.type),
+                                    )
+                                }
+                            }.build(),
+                    ).addSuperclassConstructorParameter(
+                        "%S",
+                        action.className,
+                    ).addSuperclassConstructorParameter(
                         CodeBlock
                             .builder()
                             .addStatement("mapOf(")
@@ -174,9 +163,28 @@ object KotlinGenerator {
                                 }
                                 addStatement(")")
                             }.build(),
-                    )
-                }
-            }.build()
+                    ).apply {
+                        action.parameters.forEach { parameter ->
+                            addProperty(
+                                PropertySpec
+                                    .builder(
+                                        parameter.variable,
+                                        toKClass(parameter.type),
+                                    ).initializer(parameter.variable)
+                                    .build(),
+                            )
+                        }
+                    }
+            }
+        return builder
+            .addKdoc(action.description)
+            .superclass(
+                ClassName(
+                    PACKAGE,
+                    ROOT_CLASS,
+                ).nestedClass(ACTION_CLASS),
+            ).build()
+    }
 
     private fun toKClass(parameterType: ParameterType): KClass<*> =
         when (parameterType) {
