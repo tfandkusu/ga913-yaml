@@ -22,6 +22,7 @@ object KotlinGenerator {
     private const val SCREEN_CLASS = "Screen"
     private const val ACTION_CLASS = "Action"
     private const val EVENT_NAME_PROPERTY = "eventName"
+    private const val EVENT_PARAMETERS_PROPERTY = "eventParameters"
 
     fun generate(screens: List<Screen>) {
         val fileSpec =
@@ -63,19 +64,27 @@ object KotlinGenerator {
                 TypeSpec
                     .classBuilder(ACTION_CLASS)
                     .addModifiers(KModifier.SEALED)
-                    .addProperty(
+                    .primaryConstructor(
+                        FunSpec
+                            .constructorBuilder()
+                            .addParameter(EVENT_NAME_PROPERTY, STRING)
+                            .addParameter(
+                                EVENT_PARAMETERS_PROPERTY,
+                                MAP.parameterizedBy(STRING, ANY),
+                            ).build(),
+                    ).addProperty(
                         PropertySpec
                             .builder(
                                 EVENT_NAME_PROPERTY,
                                 String::class,
-                            ).addModifiers(KModifier.ABSTRACT)
+                            ).initializer(EVENT_NAME_PROPERTY)
                             .build(),
                     ).addProperty(
                         PropertySpec
                             .builder(
-                                "eventParameters",
+                                EVENT_PARAMETERS_PROPERTY,
                                 MAP.parameterizedBy(STRING, ANY),
-                            ).addModifiers(KModifier.ABSTRACT)
+                            ).initializer(EVENT_PARAMETERS_PROPERTY)
                             .build(),
                     ).apply {
                         screens.forEach { action ->
