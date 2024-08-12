@@ -1,0 +1,32 @@
+name: イベント仕様書の作成
+on:
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - synchronize
+      - ready_for_review
+jobs:
+  make_document:
+    runs-on: ubuntu-latest
+    if: ${{ !github.event.pull_request.draft }}
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+      - uses: gradle/gradle-build-action@v2
+      - name: イベント仕様書の作成
+        run: ./gradlew run --args validate
+      - name: イベント仕様書を PUSH する
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git add .
+          git commit -m "イベント仕様書の更新"
+          git push origin HEAD
+        continue-on-error: true

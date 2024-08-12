@@ -11,6 +11,7 @@ fun main(args: Array<String>) {
         "validate" -> {
             val screens = YamlParser.parse()
             Validator.validate(screens)
+            MarkdownGenerator.generate(screens)
         }
         "make" -> {
             val screens = YamlParser.parse()

@@ -23,4 +23,5 @@ jobs:
       - uses: gradle/gradle-build-action@v2
       - run: ./gradlew spotlessCheck
       - run: ./gradlew test
-      - run: ./gradlew run --args validate
+      - name: イベントの検証
+        run: ./gradlew run --args validate
