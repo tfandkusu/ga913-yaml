@@ -4,9 +4,13 @@ import com.squareup.kotlinpoet.ANY
 import com.squareup.kotlinpoet.BOOLEAN
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
+import com.squareup.kotlinpoet.DOUBLE
+import com.squareup.kotlinpoet.FLOAT
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.FunSpec
+import com.squareup.kotlinpoet.INT
 import com.squareup.kotlinpoet.KModifier
+import com.squareup.kotlinpoet.LONG
 import com.squareup.kotlinpoet.MAP
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
@@ -16,7 +20,6 @@ import com.squareup.kotlinpoet.withIndent
 import com.tfandkusu.ga913yaml.model.Action
 import com.tfandkusu.ga913yaml.model.ParameterType
 import com.tfandkusu.ga913yaml.model.Screen
-import kotlin.reflect.KClass
 
 object KotlinGenerator {
     private const val PACKAGE = "com.tfandkusu.ga913android.analytics"
@@ -187,7 +190,7 @@ object KotlinGenerator {
                                     action.parameters.forEach { parameter ->
                                         addStatement(
                                             "%S to %L,",
-                                            parameter.value,
+                                            parameter.key,
                                             parameter.variable,
                                         )
                                     }
@@ -205,6 +208,7 @@ object KotlinGenerator {
                                         parameter.variable,
                                         toKClass(parameter.type),
                                     ).initializer(parameter.variable)
+                                    .addKdoc(parameter.description)
                                     .build(),
                             )
                         }
@@ -220,13 +224,13 @@ object KotlinGenerator {
             ).build()
     }
 
-    private fun toKClass(parameterType: ParameterType): KClass<*> =
+    private fun toKClass(parameterType: ParameterType): ClassName =
         when (parameterType) {
-            ParameterType.STRING -> String::class
-            ParameterType.INT -> Int::class
-            ParameterType.LONG -> Long::class
-            ParameterType.FLOAT -> Float::class
-            ParameterType.DOUBLE -> Double::class
-            ParameterType.BOOLEAN -> Boolean::class
+            ParameterType.STRING -> STRING
+            ParameterType.INT -> INT
+            ParameterType.LONG -> LONG
+            ParameterType.FLOAT -> FLOAT
+            ParameterType.DOUBLE -> DOUBLE
+            ParameterType.BOOLEAN -> BOOLEAN
         }
 }
