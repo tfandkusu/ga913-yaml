@@ -51,6 +51,7 @@ object KotlinGenerator {
     private fun generateAnalyticsEventClass(screens: List<Screen>): TypeSpec =
         TypeSpec
             .objectBuilder(ROOT_CLASS)
+            .addKdoc("Analytics イベントクラス群")
             .addType(
                 generateScreenSealedClass(screens),
             ).addType(
@@ -60,6 +61,7 @@ object KotlinGenerator {
     private fun generateScreenSealedClass(screens: List<Screen>): TypeSpec =
         TypeSpec
             .classBuilder(SCREEN_CLASS)
+            .addKdoc("画面遷移イベントクラス群")
             .addModifiers(KModifier.SEALED)
             .primaryConstructor(
                 FunSpec
@@ -71,15 +73,17 @@ object KotlinGenerator {
                 PropertySpec
                     .builder(
                         EVENT_NAME_PROPERTY,
-                        String::class,
+                        STRING,
                     ).initializer(EVENT_NAME_PROPERTY)
+                    .addKdoc("Analytics イベント名")
                     .build(),
             ).addProperty(
                 PropertySpec
                     .builder(
                         IS_CONVERSION_EVENT_PROPERTY,
-                        Boolean::class,
+                        BOOLEAN,
                     ).initializer(IS_CONVERSION_EVENT_PROPERTY)
+                    .addKdoc("コンバージョンイベントフラグ")
                     .build(),
             ).apply {
                 screens.forEach { screen ->
@@ -108,6 +112,7 @@ object KotlinGenerator {
     private fun generateActionSealedClass(screens: List<Screen>): TypeSpec =
         TypeSpec
             .classBuilder(ACTION_CLASS)
+            .addKdoc("画面内操作イベントクラス群")
             .addModifiers(KModifier.SEALED)
             .primaryConstructor(
                 FunSpec
@@ -122,8 +127,9 @@ object KotlinGenerator {
                 PropertySpec
                     .builder(
                         EVENT_NAME_PROPERTY,
-                        String::class,
+                        STRING,
                     ).initializer(EVENT_NAME_PROPERTY)
+                    .addKdoc("Analytics イベント名")
                     .build(),
             ).addProperty(
                 PropertySpec
@@ -131,13 +137,15 @@ object KotlinGenerator {
                         EVENT_PARAMETERS_PROPERTY,
                         MAP.parameterizedBy(STRING, ANY),
                     ).initializer(EVENT_PARAMETERS_PROPERTY)
+                    .addKdoc("Analytics イベントパラメータ")
                     .build(),
             ).addProperty(
                 PropertySpec
                     .builder(
                         IS_CONVERSION_EVENT_PROPERTY,
-                        Boolean::class,
+                        BOOLEAN,
                     ).initializer(IS_CONVERSION_EVENT_PROPERTY)
+                    .addKdoc("コンバージョンイベントフラグ")
                     .build(),
             ).apply {
                 screens.forEach { action ->
@@ -152,7 +160,7 @@ object KotlinGenerator {
                 screen.actions.forEach { action ->
                     addType(
                         generateActionClass(
-                            screenName = screen.eventName,
+                            screenEventName = screen.eventName,
                             action = action,
                         ),
                     )
@@ -160,7 +168,7 @@ object KotlinGenerator {
             }.build()
 
     private fun generateActionClass(
-        screenName: String,
+        screenEventName: String,
         action: Action,
     ): TypeSpec {
         val builder =
@@ -169,7 +177,7 @@ object KotlinGenerator {
                     .objectBuilder(action.className)
                     .addSuperclassConstructorParameter(
                         "%S",
-                        screenName + action.eventName,
+                        screenEventName + action.eventName,
                     ).addSuperclassConstructorParameter("emptyMap()")
                     .addSuperclassConstructorParameter(
                         "%L",
@@ -192,7 +200,7 @@ object KotlinGenerator {
                             }.build(),
                     ).addSuperclassConstructorParameter(
                         "%S",
-                        screenName + action.eventName,
+                        screenEventName + action.eventName,
                     ).addSuperclassConstructorParameter(
                         CodeBlock
                             .builder()
