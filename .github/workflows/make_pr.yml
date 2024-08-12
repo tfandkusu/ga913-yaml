@@ -1,0 +1,48 @@
+name: make_pr
+on:
+  push:
+    branches:
+      - main
+jobs:
+  make_pr:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+      - uses: gradle/gradle-build-action@v2
+      - name: Android アプリリポジトリチェックアウト
+        uses: actions/checkout@v3
+        with:
+          repository: tfandkusu/ga913-android
+          token: ${{ secrets.MY_PERSONAL_ACCESS_TOKEN }}
+          path: ga913-android
+      - name: Android アプリ向けイベントクラス作成
+        run: ./gradlew run --args make
+      - name: Android アプリのフォーマット整え
+        run: ./gradlew spotlessApply
+        working-directory: ga913-android
+      - name: Android アプリリポジトリにコミット
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git checkout -b update_analytics_event_class
+          git add .
+          git commit -m "Analytics イベントクラスを更新"
+        working-directory: ga913-android
+      - name: Android アプリリポジトリにプッシュ
+        run: git push -f origin update_analytics_event_class
+        working-directory: ga913-android
+        env:
+          GH_TOKEN: ${{ secrets.MY_PERSONAL_ACCESS_TOKEN }}
+      - name: Android アプリリポジトリにプルリクエストを作成する
+        run: gh pr create --title "[自動生成]Analytics イベントクラスを更新" --body "Analytics イベントクラスが自動生成されました。問題が無ければマージしてください。" --base main
+        continue-on-error: true # すでにあれば作成しない
+        working-directory: ga913-android
+        env:
+          GH_TOKEN: ${{ secrets.MY_PERSONAL_ACCESS_TOKEN }}
