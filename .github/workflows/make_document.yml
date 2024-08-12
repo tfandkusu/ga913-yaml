@@ -5,6 +5,7 @@ on:
       - opened
       - synchronize
       - reopened
+      - ready_for_review
 jobs:
   make_document:
     runs-on: ubuntu-latest
