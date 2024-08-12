@@ -1,4 +1,4 @@
-name: make_pr
+name: Android アプリリポジトリにプルリクエストを作成する
 on:
   push:
     branches:
