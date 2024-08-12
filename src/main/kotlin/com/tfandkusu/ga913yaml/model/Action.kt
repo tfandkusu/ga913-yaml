@@ -24,11 +24,17 @@ data class Action(
 
 /**
  * 画面内操作イベントのパラメータ
+ *
+ * @param description 説明文。ドキュメントとイベントクラスのフィールドへのコメントに採用される。
+ * @param variable Swift / Kotlin 上での変数名
+ * @param key Analytics イベントパラメータのキー
+ * @param type パラメータの型
  */
 @Serializable
 data class Parameter(
+    val description: String,
     val variable: String,
-    val value: String,
+    val key: String,
     val type: ParameterType,
 )
 

@@ -14,6 +14,7 @@ repositories {
 
 dependencies {
     implementation(libs.kaml)
+    implementation(libs.kotlin.poet)
     testImplementation(kotlin("test"))
     testImplementation(libs.junit)
 }
