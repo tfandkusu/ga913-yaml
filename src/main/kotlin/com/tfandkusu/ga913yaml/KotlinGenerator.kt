@@ -1,9 +1,13 @@
 package com.tfandkusu.ga913yaml
 
+import com.squareup.kotlinpoet.ANY
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.KModifier
+import com.squareup.kotlinpoet.MAP
+import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
+import com.squareup.kotlinpoet.STRING
 import com.squareup.kotlinpoet.TypeSpec
 import com.tfandkusu.ga913yaml.model.Screen
 
@@ -33,19 +37,37 @@ object KotlinGenerator {
                 TypeSpec
                     .classBuilder(SCREEN_CLASS)
                     .addModifiers(KModifier.SEALED)
-                    .apply {
-                        addProperty(
-                            PropertySpec
-                                .builder(
-                                    EVENT_NAME_PROPERTY,
-                                    String::class,
-                                ).addModifiers(KModifier.ABSTRACT)
-                                .build(),
-                        )
+                    .addProperty(
+                        PropertySpec
+                            .builder(
+                                EVENT_NAME_PROPERTY,
+                                String::class,
+                            ).addModifiers(KModifier.ABSTRACT)
+                            .build(),
+                    ).apply {
                         screens.forEach { screen ->
                             addType(generateScreenClass(screen))
                         }
                     }.build(),
+            ).addType(
+                TypeSpec
+                    .classBuilder("Action")
+                    .addModifiers(KModifier.SEALED)
+                    .addProperty(
+                        PropertySpec
+                            .builder(
+                                EVENT_NAME_PROPERTY,
+                                String::class,
+                            ).addModifiers(KModifier.ABSTRACT)
+                            .build(),
+                    ).addProperty(
+                        PropertySpec
+                            .builder(
+                                "eventParameters",
+                                MAP.parameterizedBy(STRING, ANY),
+                            ).addModifiers(KModifier.ABSTRACT)
+                            .build(),
+                    ).build(),
             ).build()
 
     private fun generateScreenClass(screen: Screen): TypeSpec =
