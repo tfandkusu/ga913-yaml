@@ -109,7 +109,8 @@ object KotlinGenerator {
                     .addParameter(
                         EVENT_PARAMETERS_PROPERTY,
                         MAP.parameterizedBy(STRING, ANY),
-                    ).build(),
+                    ).addParameter(IS_CONVERSION_EVENT_PROPERTY, BOOLEAN)
+                    .build(),
             ).addProperty(
                 PropertySpec
                     .builder(
@@ -123,6 +124,13 @@ object KotlinGenerator {
                         EVENT_PARAMETERS_PROPERTY,
                         MAP.parameterizedBy(STRING, ANY),
                     ).initializer(EVENT_PARAMETERS_PROPERTY)
+                    .build(),
+            ).addProperty(
+                PropertySpec
+                    .builder(
+                        IS_CONVERSION_EVENT_PROPERTY,
+                        Boolean::class,
+                    ).initializer(IS_CONVERSION_EVENT_PROPERTY)
                     .build(),
             ).apply {
                 screens.forEach { action ->
@@ -148,6 +156,10 @@ object KotlinGenerator {
                         "%S",
                         action.className,
                     ).addSuperclassConstructorParameter("emptyMap()")
+                    .addSuperclassConstructorParameter(
+                        "%L",
+                        action.isConversionEvent,
+                    )
             } else {
                 TypeSpec
                     .classBuilder(action.value)
@@ -182,6 +194,9 @@ object KotlinGenerator {
                                 }
                                 addStatement(")")
                             }.build(),
+                    ).addSuperclassConstructorParameter(
+                        "%L",
+                        action.isConversionEvent,
                     ).apply {
                         action.parameters.forEach { parameter ->
                             addProperty(
