@@ -1,5 +1,7 @@
 package com.tfandkusu.ga913yaml
 
+import com.tfandkusu.ga913yaml.model.Parameter
+import com.tfandkusu.ga913yaml.model.ParameterType
 import com.tfandkusu.ga913yaml.model.Screen
 import java.io.File
 
@@ -35,10 +37,24 @@ object MarkdownGenerator {
 
     private fun generateActionsMarkdown(screen: Screen): String {
         val builder = StringBuilder()
-        builder.append("| イベント名 | Analytics イベント名 | コンバージョンイベント |\n")
-        builder.append("| -- | -- | -- |\n")
+        builder.append("| イベント名 | Analytics イベント名 | パラメータ | コンバージョンイベント |\n")
+        builder.append("| -- | -- | -- | -- |\n")
         for (action in screen.actions) {
-            builder.append("| ${action.description} | ${screen.eventName + action.eventName} | ${action.isConversionEvent.toCircle()} |\n")
+            builder.append(
+                "| ${action.description} | ${screen.eventName + action.eventName} | ${
+                    generateParameterListString(
+                        action.parameters,
+                    )
+                } | ${action.isConversionEvent.toCircle()} |\n",
+            )
+        }
+        return builder.toString()
+    }
+
+    private fun generateParameterListString(parameters: List<Parameter>): String {
+        val builder = StringBuilder()
+        for (parameter in parameters) {
+            builder.append("${parameter.description} ${parameter.eventParameterKey}: ${parameter.type.toCamelCase()}<br>")
         }
         return builder.toString()
     }
@@ -48,5 +64,15 @@ object MarkdownGenerator {
             "○"
         } else {
             ""
+        }
+
+    private fun ParameterType.toCamelCase(): String =
+        when (this) {
+            ParameterType.STRING -> "String"
+            ParameterType.INT -> "Int"
+            ParameterType.LONG -> "Long"
+            ParameterType.FLOAT -> "Float"
+            ParameterType.DOUBLE -> "Double"
+            ParameterType.BOOLEAN -> "Boolean"
         }
 }
