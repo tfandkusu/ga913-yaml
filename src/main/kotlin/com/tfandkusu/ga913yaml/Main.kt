@@ -9,8 +9,8 @@ fun main(args: Array<String>) {
     val command = args[0]
     when (command) {
         "validate" -> {
-            val screens = YamlParser().parseScreens()
-            println(screens)
+            val screens = YamlParser.parse()
+            KotlinGenerator.generate(screens)
         }
         "make" -> println("Make")
         else -> println("Unknown command")
