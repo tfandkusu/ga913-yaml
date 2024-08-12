@@ -16,6 +16,7 @@ object KotlinGenerator {
     private const val DIRECTORY = "ga913-android/app/src/main/java/com/tfandkusu/ga913android/analytics"
     private const val ROOT_CLASS = "AnalyticsEvent"
     private const val SCREEN_CLASS = "Screen"
+    private const val ACTION_CLASS = "Action"
     private const val EVENT_NAME_PROPERTY = "eventName"
 
     fun generate(screens: List<Screen>) {
@@ -51,7 +52,7 @@ object KotlinGenerator {
                     }.build(),
             ).addType(
                 TypeSpec
-                    .classBuilder("Action")
+                    .classBuilder(ACTION_CLASS)
                     .addModifiers(KModifier.SEALED)
                     .addProperty(
                         PropertySpec
@@ -67,7 +68,11 @@ object KotlinGenerator {
                                 MAP.parameterizedBy(STRING, ANY),
                             ).addModifiers(KModifier.ABSTRACT)
                             .build(),
-                    ).build(),
+                    ).apply {
+                        screens.forEach { action ->
+                            addType(generateActionScreenClass(action))
+                        }
+                    }.build(),
             ).build()
 
     private fun generateScreenClass(screen: Screen): TypeSpec =
@@ -88,4 +93,9 @@ object KotlinGenerator {
                     .initializer("%S", screen.value)
                     .build(),
             ).build()
+
+    private fun generateActionScreenClass(screen: Screen): TypeSpec =
+        TypeSpec
+            .objectBuilder(screen.className)
+            .build()
 }
