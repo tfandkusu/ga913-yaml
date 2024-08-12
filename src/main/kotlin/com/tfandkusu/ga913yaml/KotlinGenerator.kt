@@ -2,6 +2,7 @@ package com.tfandkusu.ga913yaml
 
 import com.squareup.kotlinpoet.ANY
 import com.squareup.kotlinpoet.ClassName
+import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
@@ -10,6 +11,7 @@ import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.STRING
 import com.squareup.kotlinpoet.TypeSpec
+import com.squareup.kotlinpoet.withIndent
 import com.tfandkusu.ga913yaml.model.Action
 import com.tfandkusu.ga913yaml.model.ParameterType
 import com.tfandkusu.ga913yaml.model.Screen
@@ -17,7 +19,8 @@ import kotlin.reflect.KClass
 
 object KotlinGenerator {
     private const val PACKAGE = "com.tfandkusu.ga913android.analytics"
-    private const val DIRECTORY = "ga913-android/app/src/main/java/com/tfandkusu/ga913android/analytics"
+    private const val DIRECTORY =
+        "ga913-android/app/src/main/java/com/tfandkusu/ga913android/analytics"
     private const val ROOT_CLASS = "AnalyticsEvent"
     private const val SCREEN_CLASS = "Screen"
     private const val ACTION_CLASS = "Action"
@@ -141,8 +144,7 @@ object KotlinGenerator {
             ).addSuperclassConstructorParameter(
                 "%S",
                 action.className,
-            )
-            .apply {
+            ).apply {
                 action.parameters.forEach { parameter ->
                     addProperty(
                         PropertySpec
@@ -151,6 +153,27 @@ object KotlinGenerator {
                                 toKClass(parameter.type),
                             ).initializer(parameter.variable)
                             .build(),
+                    )
+                }
+                if (action.parameters.isEmpty()) {
+                    addSuperclassConstructorParameter("emptyMap()")
+                } else {
+                    addSuperclassConstructorParameter(
+                        CodeBlock
+                            .builder()
+                            .addStatement("mapOf(")
+                            .withIndent {
+                                withIndent {
+                                    action.parameters.forEach { parameter ->
+                                        addStatement(
+                                            "%S to %L,",
+                                            parameter.value,
+                                            parameter.variable,
+                                        )
+                                    }
+                                }
+                                addStatement(")")
+                            }.build(),
                     )
                 }
             }.build()
