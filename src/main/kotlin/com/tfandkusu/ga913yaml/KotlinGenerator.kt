@@ -51,6 +51,7 @@ object KotlinGenerator {
     private fun generateAnalyticsEventClass(screens: List<Screen>): TypeSpec =
         TypeSpec
             .objectBuilder(ROOT_CLASS)
+            .addKdoc("Analytics イベントクラス群")
             .addType(
                 generateScreenSealedClass(screens),
             ).addType(
@@ -60,6 +61,7 @@ object KotlinGenerator {
     private fun generateScreenSealedClass(screens: List<Screen>): TypeSpec =
         TypeSpec
             .classBuilder(SCREEN_CLASS)
+            .addKdoc("画面遷移イベントクラス群")
             .addModifiers(KModifier.SEALED)
             .primaryConstructor(
                 FunSpec
@@ -71,15 +73,17 @@ object KotlinGenerator {
                 PropertySpec
                     .builder(
                         EVENT_NAME_PROPERTY,
-                        String::class,
+                        STRING,
                     ).initializer(EVENT_NAME_PROPERTY)
+                    .addKdoc("Analytics イベント名")
                     .build(),
             ).addProperty(
                 PropertySpec
                     .builder(
                         IS_CONVERSION_EVENT_PROPERTY,
-                        Boolean::class,
+                        BOOLEAN,
                     ).initializer(IS_CONVERSION_EVENT_PROPERTY)
+                    .addKdoc("コンバージョンイベントフラグ")
                     .build(),
             ).apply {
                 screens.forEach { screen ->
@@ -99,7 +103,7 @@ object KotlinGenerator {
                 ).nestedClass(SCREEN_CLASS),
             ).addSuperclassConstructorParameter(
                 "%S",
-                screen.className,
+                screen.eventName,
             ).addSuperclassConstructorParameter(
                 "%L",
                 screen.isConversionEvent,
@@ -108,6 +112,7 @@ object KotlinGenerator {
     private fun generateActionSealedClass(screens: List<Screen>): TypeSpec =
         TypeSpec
             .classBuilder(ACTION_CLASS)
+            .addKdoc("画面内操作イベントクラス群")
             .addModifiers(KModifier.SEALED)
             .primaryConstructor(
                 FunSpec
@@ -122,8 +127,9 @@ object KotlinGenerator {
                 PropertySpec
                     .builder(
                         EVENT_NAME_PROPERTY,
-                        String::class,
+                        STRING,
                     ).initializer(EVENT_NAME_PROPERTY)
+                    .addKdoc("Analytics イベント名")
                     .build(),
             ).addProperty(
                 PropertySpec
@@ -131,13 +137,15 @@ object KotlinGenerator {
                         EVENT_PARAMETERS_PROPERTY,
                         MAP.parameterizedBy(STRING, ANY),
                     ).initializer(EVENT_PARAMETERS_PROPERTY)
+                    .addKdoc("Analytics イベントパラメータ")
                     .build(),
             ).addProperty(
                 PropertySpec
                     .builder(
                         IS_CONVERSION_EVENT_PROPERTY,
-                        Boolean::class,
+                        BOOLEAN,
                     ).initializer(IS_CONVERSION_EVENT_PROPERTY)
+                    .addKdoc("コンバージョンイベントフラグ")
                     .build(),
             ).apply {
                 screens.forEach { action ->
@@ -150,18 +158,26 @@ object KotlinGenerator {
             .objectBuilder(screen.className)
             .apply {
                 screen.actions.forEach { action ->
-                    addType(generateActionClass(action))
+                    addType(
+                        generateActionClass(
+                            screenEventName = screen.eventName,
+                            action = action,
+                        ),
+                    )
                 }
             }.build()
 
-    private fun generateActionClass(action: Action): TypeSpec {
+    private fun generateActionClass(
+        screenEventName: String,
+        action: Action,
+    ): TypeSpec {
         val builder =
             if (action.parameters.isEmpty()) {
                 TypeSpec
-                    .objectBuilder(action.value)
+                    .objectBuilder(action.className)
                     .addSuperclassConstructorParameter(
                         "%S",
-                        action.className,
+                        screenEventName + action.eventName,
                     ).addSuperclassConstructorParameter("emptyMap()")
                     .addSuperclassConstructorParameter(
                         "%L",
@@ -169,7 +185,7 @@ object KotlinGenerator {
                     )
             } else {
                 TypeSpec
-                    .classBuilder(action.value)
+                    .classBuilder(action.className)
                     .addModifiers(KModifier.DATA)
                     .primaryConstructor(
                         FunSpec
@@ -177,14 +193,14 @@ object KotlinGenerator {
                             .apply {
                                 action.parameters.forEach { parameter ->
                                     addParameter(
-                                        parameter.variable,
+                                        parameter.propertyName,
                                         toKClass(parameter.type),
                                     )
                                 }
                             }.build(),
                     ).addSuperclassConstructorParameter(
                         "%S",
-                        action.className,
+                        screenEventName + action.eventName,
                     ).addSuperclassConstructorParameter(
                         CodeBlock
                             .builder()
@@ -194,8 +210,8 @@ object KotlinGenerator {
                                     action.parameters.forEach { parameter ->
                                         addStatement(
                                             "%S to %L,",
-                                            parameter.key,
-                                            parameter.variable,
+                                            parameter.eventParameterKey,
+                                            parameter.propertyName,
                                         )
                                     }
                                 }
@@ -209,9 +225,9 @@ object KotlinGenerator {
                             addProperty(
                                 PropertySpec
                                     .builder(
-                                        parameter.variable,
+                                        parameter.propertyName,
                                         toKClass(parameter.type),
-                                    ).initializer(parameter.variable)
+                                    ).initializer(parameter.propertyName)
                                     .addKdoc(parameter.description)
                                     .build(),
                             )
