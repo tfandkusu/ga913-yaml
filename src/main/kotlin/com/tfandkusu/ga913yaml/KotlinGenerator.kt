@@ -21,30 +21,32 @@ object KotlinGenerator {
                 .addFileComment(
                     "https://github.com/tfandkusu/ga913-yaml/ による自動生成コードです。編集しないでください。",
                 ).addType(
-                    TypeSpec
-                        .objectBuilder(ROOT_CLASS)
-                        .addType(
-                            TypeSpec
-                                .classBuilder(SCREEN_CLASS)
-                                .addModifiers(KModifier.SEALED)
-                                .apply {
-                                    addProperty(
-                                        PropertySpec
-                                            .builder(
-                                                EVENT_NAME_PROPERTY,
-                                                String::class,
-                                            ).addModifiers(KModifier.ABSTRACT)
-                                            .build(),
-                                    )
-                                    screens.forEach { screen ->
-                                        addType(generateScreenClass(screen))
-                                    }
-                                }.build(),
-                        ).build(),
+                    generateAnalyticsEventClass(screens),
                 ).build()
-
         fileSpec.writeTo(System.out)
     }
+
+    private fun generateAnalyticsEventClass(screens: List<Screen>): TypeSpec =
+        TypeSpec
+            .objectBuilder(ROOT_CLASS)
+            .addType(
+                TypeSpec
+                    .classBuilder(SCREEN_CLASS)
+                    .addModifiers(KModifier.SEALED)
+                    .apply {
+                        addProperty(
+                            PropertySpec
+                                .builder(
+                                    EVENT_NAME_PROPERTY,
+                                    String::class,
+                                ).addModifiers(KModifier.ABSTRACT)
+                                .build(),
+                        )
+                        screens.forEach { screen ->
+                            addType(generateScreenClass(screen))
+                        }
+                    }.build(),
+            ).build()
 
     private fun generateScreenClass(screen: Screen): TypeSpec =
         TypeSpec
