@@ -1,6 +1,8 @@
 package com.tfandkusu.ga913yaml
 
 import com.tfandkusu.ga913yaml.model.Action
+import com.tfandkusu.ga913yaml.model.Parameter
+import com.tfandkusu.ga913yaml.model.ParameterType
 import com.tfandkusu.ga913yaml.model.Screen
 import org.junit.Assert.assertEquals
 import org.junit.Assert.fail
@@ -11,8 +13,16 @@ class ValidatorTest {
     fun checkScreenEventNameLength() {
         val screens =
             listOf(
-                Screen(description = "40文字を超えない画面遷移イベント", className = "Screen1", eventName = "a".repeat(40)),
-                Screen(description = "40文字を超える画面遷移イベント", className = "Screen2", eventName = "b".repeat(41)),
+                Screen(
+                    description = "40文字を超えない画面遷移イベント",
+                    className = "Screen1",
+                    eventName = "a".repeat(40),
+                ),
+                Screen(
+                    description = "40文字を超える画面遷移イベント",
+                    className = "Screen2",
+                    eventName = "b".repeat(41),
+                ),
             )
         try {
             Validator.validate(screens)
@@ -51,6 +61,50 @@ class ValidatorTest {
         } catch (e: IllegalArgumentException) {
             assertEquals(
                 "画面内操作イベント Screen1.Action2 は40文字を超えています。",
+                e.message,
+            )
+        }
+    }
+
+    @Test
+    fun checkEventParameterKeyLength() {
+        val screens =
+            listOf(
+                Screen(
+                    description = "画面1",
+                    className = "Screen1",
+                    eventName = "Scene1",
+                    actions =
+                        listOf(
+                            Action(
+                                description = "画面内操作1",
+                                className = "Action1",
+                                eventName = "Action1",
+                                parameters =
+                                    listOf(
+                                        Parameter(
+                                            description = "40文字を超えないパラメータキー",
+                                            propertyName = "param1",
+                                            eventParameterKey = "a".repeat(40),
+                                            type = ParameterType.STRING,
+                                        ),
+                                        Parameter(
+                                            description = "40文字を超えるパラメータキー",
+                                            propertyName = "param2",
+                                            eventParameterKey = "b".repeat(41),
+                                            type = ParameterType.STRING,
+                                        ),
+                                    ),
+                            ),
+                        ),
+                ),
+            )
+        try {
+            Validator.validate(screens)
+            fail()
+        } catch (e: IllegalArgumentException) {
+            assertEquals(
+                "画面内操作イベント Screen1.Action1 のパラメータキー param2 は40文字を超えています。",
                 e.message,
             )
         }

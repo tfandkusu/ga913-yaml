@@ -5,6 +5,7 @@ import com.tfandkusu.ga913yaml.model.Screen
 object Validator {
     fun validate(screens: List<Screen>) {
         checkEventNameLength(screens)
+        checkEventParameterKeyLength(screens)
         checkEventCount(screens)
     }
 
@@ -27,12 +28,29 @@ object Validator {
     }
 
     /**
+     * イベントパラメータキーの長さが40文字を超えていないかチェックする。
+     */
+    private fun checkEventParameterKeyLength(screens: List<Screen>) {
+        for (screen in screens) {
+            for (action in screen.actions) {
+                for (parameter in action.parameters) {
+                    if (parameter.eventParameterKey.length > 40) {
+                        throw IllegalArgumentException(
+                            "画面内操作イベント " + screen.className + "." + action.className + " のパラメータキー " +
+                                    parameter.propertyName + " は40文字を超えています。",
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    /**
      * イベント種類数が500を超えていないかチェックする。
      */
     private fun checkEventCount(screens: List<Screen>) {
         val eventCount =
-            screens.count { it.isConversionEvent } +
-                screens.flatMap { it.actions }.count { it.isConversionEvent }
+            screens.count { it.isConversionEvent } + screens.flatMap { it.actions }.count { it.isConversionEvent }
         if (eventCount > 500) {
             throw IllegalArgumentException("イベント種類数が500を超えています。")
         }
