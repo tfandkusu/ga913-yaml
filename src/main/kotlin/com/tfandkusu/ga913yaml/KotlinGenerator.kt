@@ -3,13 +3,17 @@ package com.tfandkusu.ga913yaml
 import com.squareup.kotlinpoet.ANY
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.FileSpec
+import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.MAP
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.STRING
 import com.squareup.kotlinpoet.TypeSpec
+import com.tfandkusu.ga913yaml.model.Action
+import com.tfandkusu.ga913yaml.model.ParameterType
 import com.tfandkusu.ga913yaml.model.Screen
+import kotlin.reflect.KClass
 
 object KotlinGenerator {
     private const val PACKAGE = "com.tfandkusu.ga913android.analytics"
@@ -97,5 +101,60 @@ object KotlinGenerator {
     private fun generateActionScreenClass(screen: Screen): TypeSpec =
         TypeSpec
             .objectBuilder(screen.className)
-            .build()
+            .apply {
+                screen.actions.forEach { action ->
+                    addType(generateActionClass(action))
+                }
+            }.build()
+
+    private fun generateActionClass(action: Action): TypeSpec =
+        TypeSpec
+            .classBuilder(action.value)
+            .addModifiers(KModifier.DATA)
+            .superclass(
+                ClassName(
+                    PACKAGE,
+                    ROOT_CLASS,
+                ).nestedClass(ACTION_CLASS),
+            ).primaryConstructor(
+                FunSpec
+                    .constructorBuilder()
+                    .apply {
+                        action.parameters.forEach { parameter ->
+                            addParameter(
+                                parameter.variable,
+                                toKClass(parameter.type),
+                            )
+                        }
+                    }.build(),
+            ).addProperty(
+                PropertySpec
+                    .builder(
+                        EVENT_NAME_PROPERTY,
+                        String::class,
+                    ).addModifiers(KModifier.OVERRIDE)
+                    .initializer("%S", action.value)
+                    .build(),
+            ).apply {
+                action.parameters.forEach { parameter ->
+                    addProperty(
+                        PropertySpec
+                            .builder(
+                                parameter.variable,
+                                toKClass(parameter.type),
+                            ).initializer(parameter.variable)
+                            .build(),
+                    )
+                }
+            }.build()
+
+    private fun toKClass(parameterType: ParameterType): KClass<*> =
+        when (parameterType) {
+            ParameterType.STRING -> String::class
+            ParameterType.INT -> Int::class
+            ParameterType.LONG -> Long::class
+            ParameterType.FLOAT -> Float::class
+            ParameterType.DOUBLE -> Double::class
+            ParameterType.BOOLEAN -> Boolean::class
+        }
 }
