@@ -1,6 +1,7 @@
 package com.tfandkusu.ga913yaml
 
 import com.squareup.kotlinpoet.ANY
+import com.squareup.kotlinpoet.BOOLEAN
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FileSpec
@@ -26,6 +27,7 @@ object KotlinGenerator {
     private const val ACTION_CLASS = "Action"
     private const val EVENT_NAME_PROPERTY = "eventName"
     private const val EVENT_PARAMETERS_PROPERTY = "eventParameters"
+    private const val IS_CONVERSION_EVENT_PROPERTY = "isConversionEvent"
 
     fun generate(screens: List<Screen>) {
         val fileSpec =
@@ -43,58 +45,40 @@ object KotlinGenerator {
         TypeSpec
             .objectBuilder(ROOT_CLASS)
             .addType(
-                TypeSpec
-                    .classBuilder(SCREEN_CLASS)
-                    .addModifiers(KModifier.SEALED)
-                    .primaryConstructor(
-                        FunSpec
-                            .constructorBuilder()
-                            .addParameter(EVENT_NAME_PROPERTY, STRING)
-                            .build(),
-                    ).addProperty(
-                        PropertySpec
-                            .builder(
-                                EVENT_NAME_PROPERTY,
-                                String::class,
-                            ).initializer(EVENT_NAME_PROPERTY)
-                            .build(),
-                    ).apply {
-                        screens.forEach { screen ->
-                            addType(generateScreenClass(screen))
-                        }
-                    }.build(),
+                generateScreenSealedClass(screens),
             ).addType(
-                TypeSpec
-                    .classBuilder(ACTION_CLASS)
-                    .addModifiers(KModifier.SEALED)
-                    .primaryConstructor(
-                        FunSpec
-                            .constructorBuilder()
-                            .addParameter(EVENT_NAME_PROPERTY, STRING)
-                            .addParameter(
-                                EVENT_PARAMETERS_PROPERTY,
-                                MAP.parameterizedBy(STRING, ANY),
-                            ).build(),
-                    ).addProperty(
-                        PropertySpec
-                            .builder(
-                                EVENT_NAME_PROPERTY,
-                                String::class,
-                            ).initializer(EVENT_NAME_PROPERTY)
-                            .build(),
-                    ).addProperty(
-                        PropertySpec
-                            .builder(
-                                EVENT_PARAMETERS_PROPERTY,
-                                MAP.parameterizedBy(STRING, ANY),
-                            ).initializer(EVENT_PARAMETERS_PROPERTY)
-                            .build(),
-                    ).apply {
-                        screens.forEach { action ->
-                            addType(generateActionScreenClass(action))
-                        }
-                    }.build(),
+                generateActionSealedClass(screens),
             ).build()
+
+    private fun generateScreenSealedClass(screens: List<Screen>): TypeSpec =
+        TypeSpec
+            .classBuilder(SCREEN_CLASS)
+            .addModifiers(KModifier.SEALED)
+            .primaryConstructor(
+                FunSpec
+                    .constructorBuilder()
+                    .addParameter(EVENT_NAME_PROPERTY, STRING)
+                    .addParameter(IS_CONVERSION_EVENT_PROPERTY, BOOLEAN)
+                    .build(),
+            ).addProperty(
+                PropertySpec
+                    .builder(
+                        EVENT_NAME_PROPERTY,
+                        String::class,
+                    ).initializer(EVENT_NAME_PROPERTY)
+                    .build(),
+            ).addProperty(
+                PropertySpec
+                    .builder(
+                        IS_CONVERSION_EVENT_PROPERTY,
+                        Boolean::class,
+                    ).initializer(IS_CONVERSION_EVENT_PROPERTY)
+                    .build(),
+            ).apply {
+                screens.forEach { screen ->
+                    addType(generateScreenClass(screen))
+                }
+            }.build()
 
     private fun generateScreenClass(screen: Screen): TypeSpec =
         TypeSpec
@@ -109,7 +93,42 @@ object KotlinGenerator {
             ).addSuperclassConstructorParameter(
                 "%S",
                 screen.className,
+            ).addSuperclassConstructorParameter(
+                "%L",
+                screen.isConversionEvent,
             ).build()
+
+    private fun generateActionSealedClass(screens: List<Screen>): TypeSpec =
+        TypeSpec
+            .classBuilder(ACTION_CLASS)
+            .addModifiers(KModifier.SEALED)
+            .primaryConstructor(
+                FunSpec
+                    .constructorBuilder()
+                    .addParameter(EVENT_NAME_PROPERTY, STRING)
+                    .addParameter(
+                        EVENT_PARAMETERS_PROPERTY,
+                        MAP.parameterizedBy(STRING, ANY),
+                    ).build(),
+            ).addProperty(
+                PropertySpec
+                    .builder(
+                        EVENT_NAME_PROPERTY,
+                        String::class,
+                    ).initializer(EVENT_NAME_PROPERTY)
+                    .build(),
+            ).addProperty(
+                PropertySpec
+                    .builder(
+                        EVENT_PARAMETERS_PROPERTY,
+                        MAP.parameterizedBy(STRING, ANY),
+                    ).initializer(EVENT_PARAMETERS_PROPERTY)
+                    .build(),
+            ).apply {
+                screens.forEach { action ->
+                    addType(generateActionScreenClass(action))
+                }
+            }.build()
 
     private fun generateActionScreenClass(screen: Screen): TypeSpec =
         TypeSpec
