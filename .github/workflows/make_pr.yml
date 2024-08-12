@@ -31,10 +31,13 @@ jobs:
         run: ./gradlew run --args make
       - name: Android アプリコミット
         run: |
-          git checkout -b update_analytics_event_class
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
+          git checkout -b update_analytics_event_class
           git add .
           git commit -m "Analytics イベントクラスを更新"
-      - run: git log
+        working-directory: ga913-android
+      - run: |
+          git status
+          git log
         working-directory: ga913-android
