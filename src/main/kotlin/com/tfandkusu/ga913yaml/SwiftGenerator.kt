@@ -1,12 +1,18 @@
 package com.tfandkusu.ga913yaml
 
 import com.tfandkusu.ga913yaml.model.Action
+import com.tfandkusu.ga913yaml.model.ParameterType
 import com.tfandkusu.ga913yaml.model.Screen
 import io.outfoxx.swiftpoet.ANY
 import io.outfoxx.swiftpoet.BOOL
 import io.outfoxx.swiftpoet.DICTIONARY
+import io.outfoxx.swiftpoet.DOUBLE
 import io.outfoxx.swiftpoet.DeclaredTypeName
+import io.outfoxx.swiftpoet.FLOAT
 import io.outfoxx.swiftpoet.FileSpec
+import io.outfoxx.swiftpoet.FunctionSpec
+import io.outfoxx.swiftpoet.INT
+import io.outfoxx.swiftpoet.INT64
 import io.outfoxx.swiftpoet.PropertySpec
 import io.outfoxx.swiftpoet.STRING
 import io.outfoxx.swiftpoet.TypeSpec
@@ -137,10 +143,35 @@ object SwiftGenerator {
         TypeSpec
             .structBuilder(action.className)
             .addSuperType(ACTION_PROTOCOL)
-            .addProperty(
+            .addFunction(
+                FunctionSpec
+                    .constructorBuilder()
+                    .apply {
+                        action.parameters.forEach { parameter ->
+                            addParameter(
+                                parameter.propertyName,
+                                toDeclaredTypeNames(parameter.type),
+                            )
+                        }
+                    }.addStatement("parameters = [")
+                    .apply {
+                        action.parameters.forEach { parameter ->
+                            addStatement(
+                                "    %S: %L,",
+                                parameter.eventParameterKey,
+                                parameter.propertyName,
+                            )
+                        }
+                    }.addStatement("]")
+                    .build(),
+            ).addProperty(
                 PropertySpec
                     .builder(EVENT_NAME_PROPERTY, STRING)
                     .initializer("%S", screenName)
+                    .build(),
+            ).addProperty(
+                PropertySpec
+                    .builder(EVENT_PARAMETERS_PROPERTY, DICTIONARY.parameterizedBy(STRING, ANY))
                     .build(),
             ).addProperty(
                 PropertySpec
@@ -148,4 +179,14 @@ object SwiftGenerator {
                     .initializer("%L", action.isConversionEvent)
                     .build(),
             ).build()
+
+    private fun toDeclaredTypeNames(parameterType: ParameterType): DeclaredTypeName =
+        when (parameterType) {
+            ParameterType.STRING -> STRING
+            ParameterType.INT -> INT
+            ParameterType.LONG -> INT64
+            ParameterType.FLOAT -> FLOAT
+            ParameterType.DOUBLE -> DOUBLE
+            ParameterType.BOOLEAN -> BOOL
+        }
 }
