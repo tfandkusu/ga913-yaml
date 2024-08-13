@@ -17,9 +17,13 @@ import io.outfoxx.swiftpoet.PropertySpec
 import io.outfoxx.swiftpoet.STRING
 import io.outfoxx.swiftpoet.TypeSpec
 import io.outfoxx.swiftpoet.parameterizedBy
+import java.io.File
+import java.nio.file.Files
+import java.nio.file.Paths
 
 object SwiftGenerator {
     private const val ROOT_STRUCT = "AnalyticsEvent"
+    private const val DIRECTORY = "ga913-ios/Landmarks/Analytics"
     private val SCREEN_PROTOCOL = DeclaredTypeName.typeName(".AnalyticsEventScreen")
     private val ACTION_PROTOCOL = DeclaredTypeName.typeName(".AnalyticsEventAction")
     private const val EVENT_NAME_PROPERTY = "eventName"
@@ -27,24 +31,26 @@ object SwiftGenerator {
     private const val IS_CONVERSION_EVENT_PROPERTY = "isConversionEvent"
 
     fun generate(screens: List<Screen>) {
-        FileSpec
-            .builder(ROOT_STRUCT)
-            .addComment("https://github.com/tfandkusu/ga913-yaml/ による自動生成コードです。編集しないでください。")
-            .addType(
-                generateAnalyticsEventScreenProtocol(),
-            ).addType(
-                generateAnalyticsEventActionProtocol(),
-            ).addType(
-                TypeSpec
-                    .structBuilder(ROOT_STRUCT)
-                    .addDoc("Analytics イベント構造体群")
-                    .addType(
-                        generateScreenStruct(screens),
-                    ).addType(
-                        generateActionStruct(screens),
-                    ).build(),
-            ).build()
-            .writeTo(System.out)
+        val fileSpec =
+            FileSpec
+                .builder(ROOT_STRUCT)
+                .addComment("https://github.com/tfandkusu/ga913-yaml/ による自動生成コードです。編集しないでください。")
+                .addType(
+                    generateAnalyticsEventScreenProtocol(),
+                ).addType(
+                    generateAnalyticsEventActionProtocol(),
+                ).addType(
+                    TypeSpec
+                        .structBuilder(ROOT_STRUCT)
+                        .addDoc("Analytics イベント構造体群")
+                        .addType(
+                            generateScreenStruct(screens),
+                        ).addType(
+                            generateActionStruct(screens),
+                        ).build(),
+                ).build()
+        Files.createDirectories(Paths.get(DIRECTORY))
+        File("$DIRECTORY/$ROOT_STRUCT.swift").writeText(fileSpec.toString())
     }
 
     private fun generateAnalyticsEventScreenProtocol(): TypeSpec =
