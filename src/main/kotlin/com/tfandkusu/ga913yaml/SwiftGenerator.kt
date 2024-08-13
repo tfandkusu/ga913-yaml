@@ -142,12 +142,12 @@ object SwiftGenerator {
             .addDoc(screen.description)
             .apply {
                 screen.actions.forEach { action ->
-                    addType(generateActionStruct(screen.eventName, action))
+                    addType(generateActionStruct(screenEventName = screen.eventName, action = action))
                 }
             }.build()
 
     private fun generateActionStruct(
-        screenName: String,
+        screenEventName: String,
         action: Action,
     ): TypeSpec =
         TypeSpec
@@ -178,7 +178,7 @@ object SwiftGenerator {
             ).addProperty(
                 PropertySpec
                     .builder(EVENT_NAME_PROPERTY, STRING)
-                    .initializer("%S", screenName)
+                    .initializer("%S", screenEventName + action.eventName)
                     .build(),
             ).addProperty(
                 PropertySpec
