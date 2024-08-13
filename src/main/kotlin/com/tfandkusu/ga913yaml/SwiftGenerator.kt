@@ -27,8 +27,11 @@ object SwiftGenerator {
             ).addType(
                 TypeSpec
                     .structBuilder(ROOT_STRUCT)
+                    .addDoc("Analytics イベント構造体群")
                     .addType(
                         generateScreenStruct(screens),
+                    ).addType(
+                        generateActionStruct(screens),
                     ).build(),
             ).build()
             .writeTo(System.out)
@@ -102,4 +105,17 @@ object SwiftGenerator {
                     .initializer("%L", screen.isConversionEvent)
                     .build(),
             ).build()
+
+    private fun generateActionStruct(screens: List<Screen>): TypeSpec =
+        TypeSpec
+            .structBuilder("Action")
+            .apply {
+                screens.forEach { screen ->
+                    addType(
+                        generateActionScreenStruct(screen),
+                    )
+                }
+            }.build()
+
+    private fun generateActionScreenStruct(screen: Screen): TypeSpec = TypeSpec.structBuilder(screen.className).build()
 }
