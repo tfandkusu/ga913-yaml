@@ -13,6 +13,7 @@ import io.outfoxx.swiftpoet.FileSpec
 import io.outfoxx.swiftpoet.FunctionSpec
 import io.outfoxx.swiftpoet.INT
 import io.outfoxx.swiftpoet.INT64
+import io.outfoxx.swiftpoet.ParameterSpec
 import io.outfoxx.swiftpoet.PropertySpec
 import io.outfoxx.swiftpoet.STRING
 import io.outfoxx.swiftpoet.TypeSpec
@@ -92,6 +93,7 @@ object SwiftGenerator {
     private fun generateScreenStruct(screens: List<Screen>): TypeSpec =
         TypeSpec
             .structBuilder("Screen")
+            .addDoc("画面遷移イベント構造体群")
             .apply {
                 screens.forEach { screen ->
                     addType(
@@ -103,6 +105,7 @@ object SwiftGenerator {
     private fun generateScreenStruct(screen: Screen): TypeSpec =
         TypeSpec
             .structBuilder(screen.className)
+            .addDoc(screen.description)
             .addSuperType(SCREEN_PROTOCOL)
             .addProperty(
                 PropertySpec
@@ -119,6 +122,7 @@ object SwiftGenerator {
     private fun generateActionStruct(screens: List<Screen>): TypeSpec =
         TypeSpec
             .structBuilder("Action")
+            .addDoc("画面内操作イベント構造体群")
             .apply {
                 screens.forEach { screen ->
                     addType(
@@ -130,6 +134,7 @@ object SwiftGenerator {
     private fun generateActionScreenStruct(screen: Screen): TypeSpec =
         TypeSpec
             .structBuilder(screen.className)
+            .addDoc(screen.description)
             .apply {
                 screen.actions.forEach { action ->
                     addType(generateActionStruct(screen.eventName, action))
@@ -142,6 +147,7 @@ object SwiftGenerator {
     ): TypeSpec =
         TypeSpec
             .structBuilder(action.className)
+            .addDoc(action.description)
             .addSuperType(ACTION_PROTOCOL)
             .addFunction(
                 FunctionSpec
@@ -149,8 +155,9 @@ object SwiftGenerator {
                     .apply {
                         action.parameters.forEach { parameter ->
                             addParameter(
-                                parameter.propertyName,
-                                toDeclaredTypeNames(parameter.type),
+                                ParameterSpec
+                                    .builder(parameter.propertyName, toDeclaredTypeNames(parameter.type))
+                                    .build(),
                             )
                         }
                         if (action.parameters.isEmpty()) {
