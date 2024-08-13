@@ -153,17 +153,20 @@ object SwiftGenerator {
                                 toDeclaredTypeNames(parameter.type),
                             )
                         }
-                    }.addStatement("parameters = [")
-                    .apply {
-                        action.parameters.forEach { parameter ->
-                            addStatement(
-                                "    %S: %L,",
-                                parameter.eventParameterKey,
-                                parameter.propertyName,
-                            )
+                        if (action.parameters.isEmpty()) {
+                            addStatement("eventParameters = [:]")
+                        } else {
+                            addStatement("eventParameters = [")
+                            action.parameters.forEach { parameter ->
+                                addStatement(
+                                    "    %S: %L,",
+                                    parameter.eventParameterKey,
+                                    parameter.propertyName,
+                                )
+                            }
+                            addStatement("]")
                         }
-                    }.addStatement("]")
-                    .build(),
+                    }.build(),
             ).addProperty(
                 PropertySpec
                     .builder(EVENT_NAME_PROPERTY, STRING)
