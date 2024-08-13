@@ -15,6 +15,7 @@ fun main(args: Array<String>) {
         }
         "make" -> {
             val screens = YamlParser.parse()
+            SwiftGenerator.generate(screens)
             KotlinGenerator.generate(screens)
         }
         else -> println("Unknown command")

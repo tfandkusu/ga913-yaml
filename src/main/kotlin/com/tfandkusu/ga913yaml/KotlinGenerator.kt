@@ -156,6 +156,7 @@ object KotlinGenerator {
     private fun generateActionScreenClass(screen: Screen): TypeSpec =
         TypeSpec
             .objectBuilder(screen.className)
+            .addKdoc(screen.description)
             .apply {
                 screen.actions.forEach { action ->
                     addType(
