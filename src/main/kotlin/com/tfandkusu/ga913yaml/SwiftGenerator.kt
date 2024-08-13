@@ -1,5 +1,6 @@
 package com.tfandkusu.ga913yaml
 
+import com.tfandkusu.ga913yaml.model.Action
 import com.tfandkusu.ga913yaml.model.Screen
 import io.outfoxx.swiftpoet.ANY
 import io.outfoxx.swiftpoet.BOOL
@@ -15,6 +16,9 @@ object SwiftGenerator {
     private const val ROOT_STRUCT = "AnalyticsEvent"
     private val SCREEN_PROTOCOL = DeclaredTypeName.typeName(".AnalyticsEventScreen")
     private val ACTION_PROTOCOL = DeclaredTypeName.typeName(".AnalyticsEventAction")
+    private const val EVENT_NAME_PROPERTY = "eventName"
+    private const val EVENT_PARAMETERS_PROPERTY = "eventParameters"
+    private const val IS_CONVERSION_EVENT_PROPERTY = "isConversionEvent"
 
     fun generate(screens: List<Screen>) {
         FileSpec
@@ -43,13 +47,13 @@ object SwiftGenerator {
             .addDoc("画面遷移イベントのプロトコル")
             .addProperty(
                 PropertySpec
-                    .abstractBuilder("screenName", STRING)
+                    .abstractBuilder(EVENT_NAME_PROPERTY, STRING)
                     .abstractGetter()
                     .addDoc("Analytics イベント名")
                     .build(),
             ).addProperty(
                 PropertySpec
-                    .abstractBuilder("isConversionEvent", BOOL)
+                    .abstractBuilder(IS_CONVERSION_EVENT_PROPERTY, BOOL)
                     .abstractGetter()
                     .addDoc("コンバージョンイベントフラグ")
                     .build(),
@@ -61,19 +65,19 @@ object SwiftGenerator {
             .addDoc("画面内操作イベントのプロトコル")
             .addProperty(
                 PropertySpec
-                    .abstractBuilder("screenName", STRING)
+                    .abstractBuilder(EVENT_NAME_PROPERTY, STRING)
                     .abstractGetter()
                     .addDoc("Analytics イベント名")
                     .build(),
             ).addProperty(
                 PropertySpec
-                    .abstractBuilder("eventParameters", DICTIONARY.parameterizedBy(STRING, ANY))
+                    .abstractBuilder(EVENT_PARAMETERS_PROPERTY, DICTIONARY.parameterizedBy(STRING, ANY))
                     .abstractGetter()
                     .addDoc("Analytics イベントパラメータ")
                     .build(),
             ).addProperty(
                 PropertySpec
-                    .abstractBuilder("isConversionEvent", BOOL)
+                    .abstractBuilder(IS_CONVERSION_EVENT_PROPERTY, BOOL)
                     .abstractGetter()
                     .addDoc("コンバージョンイベントフラグ")
                     .build(),
@@ -96,12 +100,12 @@ object SwiftGenerator {
             .addSuperType(SCREEN_PROTOCOL)
             .addProperty(
                 PropertySpec
-                    .builder("screenName", STRING)
+                    .builder(EVENT_NAME_PROPERTY, STRING)
                     .initializer("%S", screen.eventName)
                     .build(),
             ).addProperty(
                 PropertySpec
-                    .builder("isConversionEvent", BOOL)
+                    .builder(IS_CONVERSION_EVENT_PROPERTY, BOOL)
                     .initializer("%L", screen.isConversionEvent)
                     .build(),
             ).build()
@@ -117,5 +121,31 @@ object SwiftGenerator {
                 }
             }.build()
 
-    private fun generateActionScreenStruct(screen: Screen): TypeSpec = TypeSpec.structBuilder(screen.className).build()
+    private fun generateActionScreenStruct(screen: Screen): TypeSpec =
+        TypeSpec
+            .structBuilder(screen.className)
+            .apply {
+                screen.actions.forEach { action ->
+                    addType(generateActionStruct(screen.eventName, action))
+                }
+            }.build()
+
+    private fun generateActionStruct(
+        screenName: String,
+        action: Action,
+    ): TypeSpec =
+        TypeSpec
+            .structBuilder(action.className)
+            .addSuperType(ACTION_PROTOCOL)
+            .addProperty(
+                PropertySpec
+                    .builder(EVENT_NAME_PROPERTY, STRING)
+                    .initializer("%S", screenName)
+                    .build(),
+            ).addProperty(
+                PropertySpec
+                    .builder(IS_CONVERSION_EVENT_PROPERTY, BOOL)
+                    .initializer("%L", action.isConversionEvent)
+                    .build(),
+            ).build()
 }
