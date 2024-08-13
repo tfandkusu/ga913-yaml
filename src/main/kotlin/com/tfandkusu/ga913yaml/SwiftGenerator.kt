@@ -13,7 +13,6 @@ import io.outfoxx.swiftpoet.FileSpec
 import io.outfoxx.swiftpoet.FunctionSpec
 import io.outfoxx.swiftpoet.INT
 import io.outfoxx.swiftpoet.INT64
-import io.outfoxx.swiftpoet.ParameterSpec
 import io.outfoxx.swiftpoet.PropertySpec
 import io.outfoxx.swiftpoet.STRING
 import io.outfoxx.swiftpoet.TypeSpec
@@ -154,11 +153,7 @@ object SwiftGenerator {
                     .constructorBuilder()
                     .apply {
                         action.parameters.forEach { parameter ->
-                            addParameter(
-                                ParameterSpec
-                                    .builder(parameter.propertyName, toDeclaredTypeNames(parameter.type))
-                                    .build(),
-                            )
+                            addParameter(parameter.propertyName, toDeclaredTypeNames(parameter.type))
                         }
                         if (action.parameters.isEmpty()) {
                             addStatement("eventParameters = [:]")
