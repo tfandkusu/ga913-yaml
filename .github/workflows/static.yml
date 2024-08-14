@@ -37,7 +37,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       - run: mkdir dist
-      - uses: docker/pandoc:latest
+      - uses: docker://pandoc/core:latest
         with:
           args: screens.md -s -o dist/index.html
       - name: Setup Pages
