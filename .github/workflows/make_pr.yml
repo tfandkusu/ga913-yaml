@@ -1,13 +1,8 @@
-name: Android アプリリポジトリにプルリクエストを作成する
+name: iOS / Android アプリリポジトリにプルリクエストを作成する
 on:
   push:
     branches:
       - main
-  pull_request:
-    types:
-      - opened
-      - synchronize
-      - reopened
 jobs:
   make_pr:
     runs-on: ubuntu-latest
