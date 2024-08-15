@@ -5,7 +5,11 @@ on:
   # Runs on pushes targeting the default branch
   push:
     branches: ["main"]
-
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
@@ -24,9 +28,6 @@ concurrency:
 jobs:
   # Single deploy job since we're just deploying
   deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -34,7 +35,7 @@ jobs:
       - run: mkdir dist
       - uses: docker://pandoc/core:latest
         with:
-          args: screens.md -s -o dist/index.html
+          args: actions.md -s -o dist/index.html
       - name: Setup Pages
         uses: actions/configure-pages@v5
       - name: Upload artifact
