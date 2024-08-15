@@ -21,7 +21,7 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
       - uses: gradle/gradle-build-action@v2
-      - run: ./gradlew spotlessCheck
+      - run: ./gradlew ktlintCheck
       - run: ./gradlew test
       - name: イベントの検証
         run: ./gradlew run --args validate

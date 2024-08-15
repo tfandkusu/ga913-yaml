@@ -1,7 +1,7 @@
 plugins {
     kotlin("jvm") version libs.versions.kotlin
     application
-    alias(libs.plugins.spotless)
+    alias(libs.plugins.ktlint)
     alias(libs.plugins.serialization)
 }
 
@@ -28,10 +28,4 @@ kotlin {
 }
 application {
     mainClass.set("com.tfandkusu.ga913yaml.MainKt")
-}
-spotless {
-    kotlin {
-        target("**/*.kt")
-        ktlint("1.3.1")
-    }
 }
