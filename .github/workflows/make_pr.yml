@@ -41,14 +41,16 @@ jobs:
           git add .
           git commit -m "Analytics イベントクラスを更新"
         working-directory: ga913-android
+        continue-on-error: true
       - name: Android アプリリポジトリにプッシュ
         run: git push -f origin update_analytics_event_class
         working-directory: ga913-android
+        continue-on-error: true
         env:
           GH_TOKEN: ${{ secrets.MY_PERSONAL_ACCESS_TOKEN }}
       - name: Android アプリリポジトリにプルリクエストを作成する
         run: gh pr create --title "[自動生成]Analytics イベントクラスを更新" --body "Analytics イベントクラスが自動生成されました。問題が無ければマージしてください。" --base main
-        continue-on-error: true # すでにあれば作成しない
+        continue-on-error: true
         working-directory: ga913-android
         env:
           GH_TOKEN: ${{ secrets.MY_PERSONAL_ACCESS_TOKEN }}
@@ -60,9 +62,11 @@ jobs:
           git add .
           git commit -m "Analytics イベント構造体を更新"
         working-directory: ga913-ios
+        continue-on-error: true
       - name: iOS アプリリポジトリにプッシュ
         run: git push -f origin update_analytics_event_struct
         working-directory: ga913-ios
+        continue-on-error: true
         env:
           GH_TOKEN: ${{ secrets.MY_PERSONAL_ACCESS_TOKEN }}
       - name: iOS アプリリポジトリにプルリクエストを作成する
