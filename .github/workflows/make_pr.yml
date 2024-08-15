@@ -31,7 +31,7 @@ jobs:
       - name: Android 向けイベントクラスと iOS 向けイベント構造体を作成
         run: ./gradlew run --args make
       - name: Android アプリのフォーマット整え
-        run: ./gradlew spotlessApply
+        run: ./gradlew ktlintFormat
         working-directory: ga913-android
       - name: Android アプリリポジトリにコミット
         run: |
