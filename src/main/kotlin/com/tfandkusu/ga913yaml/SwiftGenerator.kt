@@ -41,7 +41,7 @@ object SwiftGenerator {
                     generateAnalyticsEventActionProtocol(),
                 ).addType(
                     TypeSpec
-                        .structBuilder(ROOT_STRUCT)
+                        .enumBuilder(ROOT_STRUCT) // 名前空間としての利用なので enum を使う
                         .addDoc("Analytics イベント構造体群")
                         .addType(
                             generateScreenStruct(screens),
@@ -97,7 +97,7 @@ object SwiftGenerator {
 
     private fun generateScreenStruct(screens: List<Screen>): TypeSpec =
         TypeSpec
-            .structBuilder("Screen")
+            .enumBuilder("Screen")
             .addDoc("画面遷移イベント構造体群")
             .apply {
                 screens.forEach { screen ->
@@ -126,7 +126,7 @@ object SwiftGenerator {
 
     private fun generateActionStruct(screens: List<Screen>): TypeSpec =
         TypeSpec
-            .structBuilder("Action")
+            .enumBuilder("Action")
             .addDoc("画面内操作イベント構造体群")
             .apply {
                 screens.forEach { screen ->
