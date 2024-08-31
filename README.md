@@ -1,6 +1,6 @@
 # DroidKaigi 2024「 データに基づく意思決定を支える、Google Analytics for Firebase のイベント送信」の YAML ファイルによる Analytics イベント定義リポジトリ実装例
 
-同一仕様の [iOS アプリ](https://github.com/tfandkusu/ga913-ios)と [Android アプリ](https://github.com/tfandkusu/ga913-android)に対して、 YAML ファイルで定義した Analytics イベントに対応する構造体 / クラスを自動コード生成するリポジトリです。
+同一仕様の [iOS アプリ](https://github.com/tfandkusu/ga913-ios)と [Android アプリ](https://github.com/tfandkusu/ga913-android)に対して、YAML ファイルで定義した Analytics イベントに対応する構造体 / クラスを自動コード生成するリポジトリです。
 
 ## イベント仕様書
 
