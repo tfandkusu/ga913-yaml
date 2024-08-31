@@ -57,6 +57,9 @@ object Validator {
         }
     }
 
+    /**
+     * イベント名が重複していないかチェックする。
+     */
     private fun checkDuplicateEventName(screens: List<Screen>) {
         val eventNames = mutableSetOf<String>()
         for (screen in screens) {
