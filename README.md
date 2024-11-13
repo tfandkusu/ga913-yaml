@@ -26,12 +26,12 @@
 ### 自動生成されたイベント構造体　/ クラスの例
 
 - [iOS アプリ向けイベント構造体](https://github.com/tfandkusu/ga913-ios/blob/main/Landmarks/Analytics/AnalyticsEvent.swift)
-- [Android アプリ向けイベントクラス](https://github.com/tfandkusu/ga913-android/blob/main/app/src/main/java/com/tfandkusu/ga913android/analytics/AnalyticsEvent.kt)
+- [Android アプリ向けイベントクラス](https://github.com/tfandkusu/ga913-android/blob/main/viewCommon/src/main/java/com/tfandkusu/ga913android/analytics/AnalyticsEvent.kt)
 
 ###  自動生成されたイベント構造体　/ クラスの使用箇所
 
 - [iOS アプリ向け AnalyticsEventSender 構造体](https://github.com/tfandkusu/ga913-ios/blob/main/Landmarks/Analytics/AnalyticsEventSender.swift)
-- [Android アプリ向け AnalyticsEventSender クラス](https://github.com/tfandkusu/ga913-android/blob/main/app/src/main/java/com/tfandkusu/ga913android/analytics/AnalyticsEventSender.kt)
+- [Android アプリ向け AnalyticsEventSender クラス](https://github.com/tfandkusu/ga913-android/blob/main/viewCommon/src/main/java/com/tfandkusu/ga913android/analytics/AnalyticsEventSender.kt)
 
 Analytics イベント送信担当メソッドは、自動生成された構造体 / クラスを引数に取ることにより、未定義のイベントを送信することを防いでいる。
 
