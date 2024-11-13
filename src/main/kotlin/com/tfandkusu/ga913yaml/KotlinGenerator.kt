@@ -27,7 +27,7 @@ import java.nio.file.Paths
 object KotlinGenerator {
     private const val PACKAGE = "com.tfandkusu.ga913android.analytics"
     private const val DIRECTORY =
-        "ga913-android/app/src/main/java/com/tfandkusu/ga913android/analytics"
+        "ga913-android/viewCommon/src/main/java/com/tfandkusu/ga913android/analytics"
     private const val ROOT_CLASS = "AnalyticsEvent"
     private const val SCREEN_CLASS = "Screen"
     private const val ACTION_CLASS = "Action"
