@@ -51,3 +51,6 @@
     - description: プライバシーポリシーを表示する
       class: PrivacyPolicy
       value: PrivacyPolicy
+- description: テスト画面
+  class: Test
+  value: Test
